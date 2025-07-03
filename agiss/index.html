@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMACHANDRA Trivia Game</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url('https://res.cloudinary.com/ddnlumst5/image/upload/v1744225111/blank-sky-nature-park-scene-with-tree_1308-50385_wvvwxu.avif') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: -1;
+        }
+        
+        .content-wrapper {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        .game-title {
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .mascot {
+            width: 150px;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+        }
+        
+        .start-btn {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            color: white;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .start-btn:hover, .start-btn:focus {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            outline: none;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(255,138,0,0.7);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(229,46,113,0.7);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5rem;
+            }
+            .mascot {
+                width: 120px;
+            }
+            .start-btn {
+                font-size: 1.2rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="content-wrapper">
+        <img src="https://res.cloudinary.com/ddnlumst5/image/upload/v1742467518/output-onlinegiftools_wokple.gif" 
+             class="mascot" alt="Game Mascot">
+        <h1 class="game-title">AGISS Trivia-Verse</h1>
+        <button id="startBtn" class="start-btn">Start Game</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startBtn');
+            
+            // Click handler
+            startBtn.addEventListener('click', function() {
+                window.location.href = 'game.html';
+            });
+            
+            // Enter key support
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    startBtn.click();
+                }
+            });
+            
+            // Focus button on load
+            startBtn.focus();
+        });
+    </script>
+    <footer style="position: fixed; bottom: 10px; width: 100%; text-align: center; color: white; font-size: 12px;">
+        © AGISS ❤️ @love
+    </footer>
+</body>
+</html>

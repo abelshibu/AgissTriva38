@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMACHANDRA Trivia Game - A Fun Quiz</title>
+    <link rel="shortcut icon" href="https://res.cloudinary.com/ddnlumst5/image/upload/v1744221274/62610157115bef45229e18b9e7cb9006_y8hdyz.jpg">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.1"></script>
+    <style>
+        body {
+            background: url('https://res.cloudinary.com/dk0nkpch6/image/upload/v1743862744/bg_nyizjn.avif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(106, 90, 205, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            width: 500px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .rope-container {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            background: url('https://res.cloudinary.com/ddnlumst5/image/upload/v1742466969/rope_f4fjl4.png') no-repeat center;
+            background-size: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .squirrel {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            left: 0;
+            top: -40px;
+            transition: left 0.5s ease-in-out;
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .options button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            background-color: #e6ccff;
+            color: #2a003f;
+            transition: 0.3s;
+        }
+
+        .options button:hover {
+            background-color: rgb(48, 165, 42);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(224, 138, 138, 0.5);
+        }
+
+        .final-message {
+            font-size: 40px;
+            font-weight: bold;
+            display: none;
+            text-transform: uppercase;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .word-progress {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <style>
+        .game-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 0 0 5px rgba(106, 90, 205, 0.8);
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+    <audio id="bgMusic" src="https://res.cloudinary.com/ddnlumst5/video/upload/v1744222350/game-music-player-console-8bit-background-intro-theme-297305_vxn9k5.mp3" loop preload="auto"></audio>
+    <audio id="correctSound" src="https://res.cloudinary.com/ddnlumst5/video/upload/v1744222038/you-win-sequence-2-183949_zr5gjw.mp3" preload="auto"></audio>
+    <div class="container">
+        <h1 class="game-title">agiss trivia verse</h1>
+        <div class="rope-container">
+            <img src="https://res.cloudinary.com/ddnlumst5/image/upload/v1742467518/output-onlinegiftools_wokple.gif" alt="Animated Squirrel" class="squirrel">
+        </div>
+
+        <div class="word-progress">___________</div>
+        <div class="question">Loading...</div>
+        <div class="options"></div>
+        <div class="final-message"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const backgrounds = [
+            'https://res.cloudinary.com/ddnlumst5/image/upload/v1744224632/pixel-rain-abstract-background_23-2148370435_trvbxq.avif',
+            'https://res.cloudinary.com/ddnlumst5/image/upload/v1744224631/online-videogame-controller-background-with-text-space_1017-54747_vedwfi.avif',
+            'https://res.cloudinary.com/ddnlumst5/image/upload/v1744224687/decorative-glowing-neon-frame_23-2149086117_yk1ax0.avif',
+            'https://res.cloudinary.com/ddnlumst5/image/upload/v1744224687/realistic-polygonal-background_23-2148922432_bkbatq.avif',
+            'https://res.cloudinary.com/dk0nkpch6/image/upload/v1743862744/bg_nyizjn.avif'
+        ];
+
+        const wordSets = [
+            {
+                word: "RAMACHANDRA",
+                background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+                questions: [
+                    { letter: 'R', question: "Which programming language is used for AI and starts with 'R'?", options: ['Rust', 'Ruby', 'R', 'React'], answer: 'R' },
+                    { letter: 'A', question: "Which data structure follows LIFO and starts with 'A'?", options: ['AVL Tree', 'Array', 'Algorithm', 'A* Search'], answer: 'Array' },
+                    { letter: 'M', question: "Which unit of memory is equal to 1024 KB?", options: ['Macrobyte', 'Microbyte', 'Millibyte', 'Megabyte'], answer: 'Megabyte' },
+                    { letter: 'A', question: "Which scheduling algorithm uses aging to prevent starvation?", options: ['Approximate Scheduling', 'Aging Algorithm', 'Adaptive Queueing', 'Active Queue'], answer: 'Aging Algorithm' },
+                    { letter: 'C', question: "Which programming language is known for efficiency and starts with 'C'?", options: ['C#', 'C++', 'C', 'Clojure'], answer: 'C' },
+                    { letter: 'H', question: "Which protocol is used for secure web communication and starts with 'H'?", options: ['Hub', 'Hyperlink', 'Haskell', 'HTTPS'], answer: 'HTTPS' },
+                    { letter: 'A', question: "Which cloud service provider starts with 'A'?", options: ['AWS', 'Azure', 'AliCloud', 'Akamai'], answer: 'AWS' },
+                    { letter: 'N', question: "Which paradigm emphasizes functions and starts with 'N'?", options: ['None', 'Node.js', 'N-Tier', 'Neural Networks'], answer: 'Neural Networks' },
+                    { letter: 'D', question: "Which deep learning framework developed by Google starts with 'D'?", options: ['Dart', 'Deeplearning4j', 'DeepMind', 'DL Toolkit'], answer: 'DeepMind' },
+                    { letter: 'R', question: "Which cloud model provides virtualized resources and starts with 'R'?", options: ['RaaS', 'Resource Cloud', 'Red Hat Cloud', 'Rapid Compute'], answer: 'RaaS' },
+                    { letter: 'A', question: "Which database query language starts with 'A'?", options: ['Aurora SQL', 'Analytics SQL', 'Active DB', 'AQL'], answer: 'AQL' }
+                ]
+            },
+            {
+                word: "ALGORITHM",
+                background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+                questions: [
+                    { letter: 'A', question: "Which sorting algorithm has O(n log n) average case?", options: ['Bubble Sort', 'Quick Sort', 'Insertion Sort', 'Selection Sort'], answer: 'Quick Sort' },
+                    { letter: 'L', question: "Which programming language was created by Guido van Rossum?", options: ['Lua', 'Lisp', 'Logo', 'Python'], answer: 'Python' },
+                    { letter: 'G', question: "Which version control system starts with 'G'?", options: ['Git', 'Gradle', 'Gulp', 'Grunt'], answer: 'Git' },
+                    { letter: 'O', question: "Which protocol is used for object-oriented programming?", options: ['OOP', 'OCaml', 'ORB', 'ODBC'], answer: 'OOP' },
+                    { letter: 'R', question: "Which statistical programming language starts with 'R'?", options: ['Ruby', 'Rust', 'R', 'Racket'], answer: 'R' },
+                    { letter: 'I', question: "Which data type represents whole numbers?", options: ['Integer', 'Interface', 'Iterator', 'Instance'], answer: 'Integer' },
+                    { letter: 'T', question: "Which testing framework is popular for JavaScript?", options: ['Tape', 'TestNG', 'TDD', 'Jest'], answer: 'Jest' },
+                    { letter: 'H', question: "Which HTTP method is used to retrieve data?", options: ['HEAD', 'HOST', 'HTTP', 'GET'], answer: 'GET' },
+                    { letter: 'M', question: "Which NoSQL database is document-oriented?", options: ['MySQL', 'MongoDB', 'MariaDB', 'Memcached'], answer: 'MongoDB' }
+                ]
+            },
+            {
+                word: "FUNCTION",
+                background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+                questions: [
+                    { letter: 'F', question: "Which programming paradigm focuses on functions?", options: ['Functional', 'Fluent', 'Factory', 'Facade'], answer: 'Functional' },
+                    { letter: 'U', question: "Which HTTP status code means 'Unauthorized'?", options: ['200', '400', '401', '403'], answer: '401' },
+                    { letter: 'N', question: "Which JavaScript runtime is built on Chrome's V8 engine?", options: ['Node.js', 'NPM', 'Nginx', 'Nuxt'], answer: 'Node.js' },
+                    { letter: 'C', question: "Which language is known for its performance and starts with 'C'?", options: ['C#', 'C++', 'C', 'Clojure'], answer: 'C++' },
+                    { letter: 'T', question: "Which testing approach verifies individual units?", options: ['TDD', 'Integration', 'Unit', 'System'], answer: 'Unit' },
+                    { letter: 'I', question: "Which loop runs while a condition is true?", options: ['If', 'Iterate', 'For', 'While'], answer: 'While' },
+                    { letter: 'O', question: "Which principle in OOP allows one class to inherit from another?", options: ['Overloading', 'Overriding', 'Inheritance', 'Polymorphism'], answer: 'Inheritance' },
+                    { letter: 'N', question: "Which package manager comes with Node.js?", options: ['NPM', 'NuGet', 'Yarn', 'Pip'], answer: 'NPM' }
+                ]
+            },
+            {
+                word: "VARIABLE",
+                background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+                questions: [
+                    { letter: 'V', question: "Which keyword declares a variable in JavaScript?", options: ['var', 'val', 'variable', 'vary'], answer: 'var' },
+                    { letter: 'A', question: "Which data type represents text in programming?", options: ['Array', 'Algorithm', 'ASCII', 'String'], answer: 'String' },
+                    { letter: 'R', question: "Which operator returns the remainder of division?", options: ['Ratio', 'Remainder', 'Modulus', 'Division'], answer: 'Modulus' },
+                    { letter: 'I', question: "Which loop iterates over object properties?", options: ['for...in', 'for...of', 'while', 'do...while'], answer: 'for...in' },
+                    { letter: 'A', question: "Which scope is limited to the block where it's declared?", options: ['Global', 'Local', 'Block', 'Function'], answer: 'Block' },
+                    { letter: 'B', question: "Which data structure uses key-value pairs?", options: ['Array', 'Object', 'Binary Tree', 'Stack'], answer: 'Object' },
+                    { letter: 'L', question: "Which method converts a string to lowercase?", options: ['toLower()', 'lowerCase()', 'toLowerCase()', 'caseLower()'], answer: 'toLowerCase()' },
+                    { letter: 'E', question: "Which operator checks equality without type coercion?", options: ['==', '===', '=', 'equals()'], answer: '===' }
+                ]
+            },
+            {
+                word: "NETWORK",
+                background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+                questions: [
+                    { letter: 'N', question: "Which protocol is used for name resolution?", options: ['NTP', 'NFS', 'DNS', 'DHCP'], answer: 'DNS' },
+                    { letter: 'E', question: "Which encryption protocol secures web traffic?", options: ['ESP', 'ETL', 'SSL', 'ERP'], answer: 'SSL' },
+                    { letter: 'T', question: "Which network device connects multiple networks?", options: ['Switch', 'Hub', 'Router', 'Bridge'], answer: 'Router' },
+                    { letter: 'W', question: "Which wireless security protocol is most secure?", options: ['WEP', 'WPA', 'WPA2', 'WPS'], answer: 'WPA2' },
+                    { letter: 'O', question: "Which OSI layer handles logical addressing?", options: ['Physical', 'Network', 'Transport', 'Session'], answer: 'Network' },
+                    { letter: 'R', question: "Which protocol is used for remote access?", options: ['RDP', 'RIP', 'RPC', 'RSTP'], answer: 'RDP' },
+                    { letter: 'K', question: "Which port does HTTPS typically use?", options: ['80', '443', '8080', '22'], answer: '443' }
+                ]
+            },
+            {
+                word: "PYTHON",
+                background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+                questions: [
+                    { letter: 'P', question: "Which Python data type is immutable?", options: ['List', 'Dictionary', 'Tuple', 'Set'], answer: 'Tuple' },
+                    { letter: 'Y', question: "Which keyword yields values in generators?", options: ['yield', 'return', 'generate', 'produce'], answer: 'yield' },
+                    { letter: 'T', question: "Which module is used for testing in Python?", options: ['test', 'unittest', 'pytest', 'testing'], answer: 'unittest' },
+                    { letter: 'H', question: "Which method is called when an object is created?", options: ['__init__', '__new__', '__create__', '__start__'], answer: '__init__' },
+                    { letter: 'O', question: "Which operator performs floor division?", options: ['/', '//', '%', '|'], answer: '//' },
+                    { letter: 'N', question: "Which built-in function returns the length?", options: ['count()', 'len()', 'size()', 'length()'], answer: 'len()' }
+                ]
+            }
+        ];
+            let currentWordSet = wordSets[Math.floor(Math.random() * wordSets.length)];
+            let currentQuestion = 0;
+            let formedWord = "";
+            let score = 0;
+            let totalQuestions = 0;
+            let correctAnswers = 0;
+            let squirrel = document.querySelector('.squirrel');
+            let wordProgress = document.querySelector(".word-progress");
+
+            // Set background and initialize word progress
+            document.body.style.backgroundImage = `url('${currentWordSet.background}')`;
+            wordProgress.textContent = "_".repeat(currentWordSet.word.length);
+
+            function loadQuestion() {
+                document.querySelector(".question").textContent = currentWordSet.questions[currentQuestion].question;
+                document.querySelector(".options").innerHTML = currentWordSet.questions[currentQuestion].options.map(option => 
+                    `<button class="btn btn-primary option-btn">${option}</button>`
+                ).join('');
+                addOptionListeners();
+            }
+
+    function addOptionListeners() {
+        document.querySelectorAll(".option-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                totalQuestions++;
+                if (this.textContent === currentWordSet.questions[currentQuestion].answer) {
+                    formedWord += currentWordSet.questions[currentQuestion].letter;
+                    wordProgress.textContent = formedWord + "_".repeat(currentWordSet.word.length - formedWord.length);
+                    moveSquirrel();
+                    currentQuestion++;
+                    score += 100;
+                    correctAnswers++;
+                    if (currentQuestion < currentWordSet.questions.length) {
+                        loadQuestion();
+                    } else {
+                        const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+                        document.querySelector(".final-message").textContent = `Congratulations! You Spelled ${currentWordSet.word} 🎉\nScore: ${score} | Accuracy: ${accuracy}%`;
+                        document.querySelector(".final-message").style.display = "block";
+                        stopBgMusic();
+                        document.getElementById('correctSound').play();
+                        confetti();
+                    }
+                } else {
+                    score = Math.max(0, score - 50);
+                    alert(`Wrong answer! -50 points\nCurrent score: ${score}\nStarting over...`);
+                    currentQuestion = 0;
+                    formedWord = "";
+                    wordProgress.textContent = "_".repeat(currentWordSet.word.length);
+                    squirrel.style.left = "0%";
+                    loadQuestion();
+                }
+            });
+        });
+    }
+
+
+
+            function moveSquirrel() {
+                let progress = ((currentQuestion + 1) / currentWordSet.questions.length) * 100;
+                squirrel.style.left = progress + "%";
+            }
+
+            // Initialize and play background music
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.volume = 0.5; // Set comfortable volume
+            
+            // Check if music was playing from index.html
+            if (localStorage.getItem('bgMusicPlaying') === 'true') {
+                // Continue playback from where it left off
+                const playPromise = bgMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // If autoplay fails, set up click handler
+                        document.addEventListener('click', function initMusic() {
+                            bgMusic.play();
+                            document.removeEventListener('click', initMusic);
+                        }, { once: true });
+                    });
+                }
+                
+                // Clear the flag
+                localStorage.removeItem('bgMusicPlaying');
+            } else {
+                // Start fresh if coming directly to game.html
+                document.addEventListener('click', function initMusic() {
+                    bgMusic.play();
+                    document.removeEventListener('click', initMusic);
+                }, { once: true });
+            }
+            
+            loadQuestion();
+        });
+
+        // Function to stop background music
+        function stopBgMusic() {
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+        }
+    </script>
+
+    <div style="position: fixed; bottom: 0; width: 100%; text-align: center; color: white; font-size: 16px; padding: 12px 0; background: rgba(102, 51, 153, 0.8); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+        © copyrights @ with love ❤️AGISS
+    </div>
+</body>
+
+</html>
